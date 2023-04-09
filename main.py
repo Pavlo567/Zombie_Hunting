@@ -11,10 +11,10 @@ mixer.init()
 WIDTH, HEIGHT = 900, 600
 
 # картинка фону
-bg_image = image.load("infinite_starts.jpg")
+bg_image = image.load(".jpg")
 #картинки для спрайтів
-player_image = image.load("spaceship.png")
-ufo_image = image.load("alien.png")
+player_image = image.load("soldier.png")
+zombie_image = image.load("zombie.png")
 
 # фонова музика
 mixer.music.load('musictheme.ogg')
@@ -22,7 +22,7 @@ mixer.music.set_volume(0.2)
 mixer.music.play(-1)
 
 #окремі звуки
-fire_sound = mixer.Sound("laser1.wav")
+fire_sound = mixer.Sound(".wav")
 fire_sound.set_volume(0.2)
 
 # класи
@@ -65,12 +65,12 @@ class Text(sprite.Sprite):
 
 # створення вікна
 window = display.set_mode((WIDTH, HEIGHT))
-display.set_caption("Шутер")
+display.set_caption("Zombie Hunting")
 
 # написи для лічильників очок
-score_text = Text("Рахунок: 0", 20, 50)
+score_text = Text("Score: 0", 20, 50)
 # напис з результатом гри
-result_text = Text("Перемога!", 350, 250, font_size = 50)
+result_text = Text("YOU WIN!", 350, 250, font_size = 50)
 
 #додавання фону
 bg = transform.scale(bg_image, (WIDTH, HEIGHT))
@@ -107,7 +107,7 @@ while run:
         spritelist = sprite.spritecollide(player, ufos, False)
         for collide in spritelist:
             finish = True
-            result_text.set_text("ПРОГРАШ!")
+            result_text.set_text("YOU LOSE!")
         # перевірка зіткнення 2 груп спрайтів
         # spritelist = sprite.groupcollide(ufos, bullets, True, True)
         # for collide in spritelist:
