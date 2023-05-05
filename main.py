@@ -25,7 +25,6 @@ zombie_image = image.load("img/zombie/skeleton-attack_0.png")
 # fire_sound = mixer.Sound(".wav")
 # fire_sound.set_volume(0.2)
 
-# класи
 class GameSprite(sprite.Sprite):
     def __init__(self, sprite_img, width, height, x, y, speed = 3):
         super().__init__()
@@ -58,9 +57,11 @@ class Player(sprite.Sprite):
         if keys_pressed[K_a] and self.rect.x > -1000:
             self.rect.x -= self.speed
     
-    def reset(self):
-        win.blit(self.image, (self.rect.x, self.rect.y))
+    def draw(self):
+        window.blit(self.image, (self.rect.x, self.rect.y))
+    
     def update(self):
+        keys_pressed = key.get_pressed()
         if keys_pressed[K_a] and self.rect.x > -1000:
             self.rect.x -= self.speed
             self.image = transform.rotate(self.image_orig, 180)
@@ -135,7 +136,8 @@ bg = transform.scale(bg_image, (WIDTH, HEIGHT))
 
 # створення спрайтів
 player = Player(player_image, player_speed=4, player_x=250, player_y=300)
-ufos = sprite.Group() #група спрайтів
+zombies = sprite.Group()
+zombies.add(Enemy(zombie_image, 3, 500, 500))
 
 
 # основні змінні для гри
@@ -159,10 +161,10 @@ while run:
     if not finish: # поки гра триває
         # рух спрайтів
         player.update() #рух гравця
-        ufos.update()
+        zombies.update()
 
          #зіткнення гравця і ворогів
-        spritelist = sprite.spritecollide(player, enemy, False)
+        spritelist = sprite.spritecollide(player, zombies, False)
         for collide in spritelist:
             finish = True
             result_text.set_text("YOU LOSE!")
@@ -179,7 +181,7 @@ while run:
         window.blit(bg, (0, 0)) 
         #відрисовуємо спрайти
         player.draw() 
-        ufos.draw(window)
+        zombies.draw(window)
     else:
         result_text.draw() # текст вкінці гри
     score_text.draw()
