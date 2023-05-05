@@ -11,19 +11,19 @@ mixer.init()
 WIDTH, HEIGHT = 900, 600
 
 # картинка фону
-bg_image = image.load(".jpg")
+bg_image = image.load("img/Ground_01.png")
 #картинки для спрайтів
-player_image = image.load("soldier.png")
-zombie_image = image.load("zombie.png")
+player_image = image.load("img/soldier/survivor-move_shotgun_0.png")
+zombie_image = image.load("img/zombie/skeleton-attack_0.png")
 
 # фонова музика
-mixer.music.load('musictheme.ogg')
-mixer.music.set_volume(0.2)
-mixer.music.play(-1)
+# mixer.music.load('musictheme.ogg')
+# mixer.music.set_volume(0.2)
+# mixer.music.play(-1)
 
 #окремі звуки
-fire_sound = mixer.Sound(".wav")
-fire_sound.set_volume(0.2)
+# fire_sound = mixer.Sound(".wav")
+# fire_sound.set_volume(0.2)
 
 # класи
 class GameSprite(sprite.Sprite):
@@ -39,14 +39,65 @@ class GameSprite(sprite.Sprite):
     def draw(self): #відрисовуємо спрайт у вікні
         window.blit(self.image, self.rect)
 
-class Player(GameSprite):
-    def update(self): #рух спрайту
-        keys_pressed = key.get_pressed() 
-        if keys_pressed[K_LEFT] and self.rect.x > 0:
+class Player(sprite.Sprite):
+    def __init__(self, player_image, player_speed, player_x, player_y):
+        super().__init()
+        self.width = 100
+        self.height = 100
+        self.image_orig = transform.scale(image.load(player_image), (self.width, self.height))
+        self.image = self.image_orig
+        self.speed = player_speed
+        self.rect = self.image.get_rect()
+        self.rect.x = player_x
+        self.rect.y = player_y
+
+    def reset(self):
+        win.blit(self.image, (self.rect.x, self.rect.y))
+    def update(self):
+        if keys_pressed[K_a] and self.rect.x > -1000:
             self.rect.x -= self.speed
-        if keys_pressed[K_RIGHT] and self.rect.x < WIDTH - 70:
+            self.image = transform.rotate(self.image_orig, 180)
+        if keys_pressed[K_d] and self.rect.x > -1000:
             self.rect.x += self.speed
-        
+            self.image = self.image_orig
+        if keys_pressed[K_w] and self.rect.y > -1000:
+            self.rect.y -= self.speed
+            self.image = transform.rotate(self.image_orig, 90)
+        if keys_pressed[K_s] and self.rect.y > -1000:
+            self.rect.y += self.speed
+            self.image = transform.rotate(self.image_orig, -90)
+
+    def fire(self):
+            print(self.rect.right)
+            bullets.add(Bullet(self.rect.x + self.width - 10, self.rect.y + self.height * 0.75))
+
+class Enemy(sprite.Sprite):
+    def __init__(self, enem_image, enem_speed, enem_x, enem_y):
+        super().__init__()
+        self.width = 100
+        self.height = 100
+        self.image = transform.scale(image.load(enem_image), (self.width, self.height))
+        self.speed = enem_speed
+        self.rect = self.image.get_rect()
+        self.rect.x = enem_x
+        self.rect.y = enem_y
+    def update(self):
+        # if self.rect.x > 0:
+        #      self.rect.x -= self.speed
+
+        if self.rect.x > player.rect.x:
+            self.rect.x -= self.speed
+        elif self.rect.x < player.rect.x:
+            self.rect.x += self.speed
+        # Movement along y direction
+        if self.rect.y < player.rect.y:
+            self.rect.y += self.speed
+        elif self.rect.y > player.rect.y:
+            self.rect.y -= self.speed
+    def reset(self):
+        win.blit(self.image, (self.rect.x, self.rect.y))
+
+
 class Text(sprite.Sprite):
     def __init__(self, text, x, y, font_size=22, font_name="Impact", color=(255,255,255)):
         self.font = font.SysFont(font_name, font_size)
