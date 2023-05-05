@@ -41,16 +41,23 @@ class GameSprite(sprite.Sprite):
 
 class Player(sprite.Sprite):
     def __init__(self, player_image, player_speed, player_x, player_y):
-        super().__init()
+        super().__init__()
         self.width = 100
         self.height = 100
-        self.image_orig = transform.scale(image.load(player_image), (self.width, self.height))
+        self.image_orig = transform.scale(player_image, (self.width, self.height))
         self.image = self.image_orig
         self.speed = player_speed
         self.rect = self.image.get_rect()
         self.rect.x = player_x
         self.rect.y = player_y
+    def draw(self):
+        window.blit(self.image, (self.rect.x, self.rect.y))
 
+    def update(self):
+        keys_pressed = key.get_pressed()
+        if keys_pressed[K_a] and self.rect.x > -1000:
+            self.rect.x -= self.speed
+    
     def reset(self):
         win.blit(self.image, (self.rect.x, self.rect.y))
     def update(self):
@@ -76,7 +83,7 @@ class Enemy(sprite.Sprite):
         super().__init__()
         self.width = 100
         self.height = 100
-        self.image = transform.scale(image.load(enem_image), (self.width, self.height))
+        self.image = transform.scale(enem_image, (self.width, self.height))
         self.speed = enem_speed
         self.rect = self.image.get_rect()
         self.rect.x = enem_x
@@ -87,8 +94,8 @@ class Enemy(sprite.Sprite):
 
         if self.rect.x > player.rect.x:
             self.rect.x -= self.speed
-        elif self.rect.x < player.rect.x:
-            self.rect.x += self.speed
+    def draw(self):
+        window.blit(self.image, (self.rect.x, self.rect.y))
         # Movement along y direction
         if self.rect.y < player.rect.y:
             self.rect.y += self.speed
@@ -127,7 +134,7 @@ result_text = Text("YOU WIN!", 350, 250, font_size = 50)
 bg = transform.scale(bg_image, (WIDTH, HEIGHT))
 
 # створення спрайтів
-player = Player(player_image, width = 100, height = 100, x = 200, y = HEIGHT-150)
+player = Player(player_image, player_speed=4, player_x=250, player_y=300)
 ufos = sprite.Group() #група спрайтів
 
 
@@ -155,7 +162,7 @@ while run:
         ufos.update()
 
          #зіткнення гравця і ворогів
-        spritelist = sprite.spritecollide(player, ufos, False)
+        spritelist = sprite.spritecollide(player, enemy, False)
         for collide in spritelist:
             finish = True
             result_text.set_text("YOU LOSE!")
