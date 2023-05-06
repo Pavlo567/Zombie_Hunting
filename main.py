@@ -17,7 +17,7 @@ player_image = image.load("img/soldier/survivor-move_shotgun_0.png")
 zombie_image = image.load("img/zombie/skeleton-attack_0.png")
 
 # фонова музика
-mixer.music.load('ente_evil.mp3')
+mixer.music.load('img/ente_evil.mp3')
 mixer.music.set_volume(0.2)
 mixer.music.play(-1)
 
@@ -105,6 +105,32 @@ class Enemy(sprite.Sprite):
         win.blit(self.image, (self.rect.x, self.rect.y))
 
 
+class Bullet(sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.pos = (x, y)
+        mx, my = mouse.get_pos # координати мишки
+        self.dir = (mx - x, my - y)
+        lenght = math.hypot(*self.dir)
+        if lenght == 0.0:
+            self.dir = (0, -1) #напрямок пострілу
+        else:
+            self.dir = (self.dir[0]/length, self.dir[1]/length)
+        angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
+
+        self.image = Surface((9, 4)).convert_alpha() #зображення кулі
+        self.image.fill((156, 91, 0)) # колір кулі в RGB
+        self.image = transform.rotate(self.image, angle) # поворот кулі в напрямку пострілу
+        self.speed = 13
+        self.rect = Rect(x, y, 9, 4)
+
+    def update(self): # рух кулі
+        self.rect.x += self.dir[0]*self.speed
+        self.rect.y += self.dir[1]*self.speed
+        # видалення кулі при виході за межі екрану
+        if not window.get_rect().collidepoint(self.pos):
+            self.kill()
+
 class Text(sprite.Sprite):
     def __init__(self, text, x, y, font_size=22, font_name="Impact", color=(255,255,255)):
         self.font = font.SysFont(font_name, font_size)
@@ -135,6 +161,7 @@ bg = transform.scale(bg_image, (WIDTH, HEIGHT))
 
 # створення спрайтів
 player = Player(player_image, player_speed=4, player_x=250, player_y=300)
+bullets = sprite.Group()
 zombies = sprite.Group()
 zombies.add(Enemy(zombie_image, 3, 500, 500))
 
@@ -153,6 +180,8 @@ while run:
     for e in event.get():
         if e.type == QUIT:
             run = False
+        if e.type == MOUSEBUTTONDOWN:
+            player.fire()
         if e.type == KEYDOWN:
             if e.key == K_ESCAPE:  #якщо натиснуто ESCAPE
                 menu.enable()
