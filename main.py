@@ -197,11 +197,11 @@ while run:
             finish = True
             result_text.set_text("YOU LOSE!")
         # перевірка зіткнення 2 груп спрайтів
-        # spritelist = sprite.groupcollide(ufos, bullets, True, True)
+        # spritelist = sprite.groupcollide(zombies, bullets, True, True)
         # for collide in spritelist:
-        #     explosions.add(Explosion(collide.rect.x, collide.rect.y, images_list))
-        #     score += 1
-        #     score_text.set_text("Рахунок:" + str(score))
+        # explosions.add(Explosion(collide.rect.x, collide.rect.y, images_list))
+        # score += 1
+        # score_text.set_text("Рахунок:" + str(score))
        
         if score >= 10:
             finish = True
