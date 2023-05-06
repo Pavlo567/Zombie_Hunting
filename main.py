@@ -17,9 +17,9 @@ player_image = image.load("img/soldier/survivor-move_shotgun_0.png")
 zombie_image = image.load("img/zombie/skeleton-attack_0.png")
 
 # фонова музика
-# mixer.music.load('musictheme.ogg')
-# mixer.music.set_volume(0.2)
-# mixer.music.play(-1)
+mixer.music.load('ente_evil.mp3')
+mixer.music.set_volume(0.2)
+mixer.music.play(-1)
 
 #окремі звуки
 # fire_sound = mixer.Sound(".wav")
@@ -59,7 +59,6 @@ class Player(sprite.Sprite):
     
     def draw(self):
         window.blit(self.image, (self.rect.x, self.rect.y))
-    
     def update(self):
         keys_pressed = key.get_pressed()
         if keys_pressed[K_a] and self.rect.x > -1000:
