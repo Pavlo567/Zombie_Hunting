@@ -1,6 +1,6 @@
 from pygame import *
 from random import randint
-
+import math
 import os
 
 init()
@@ -22,8 +22,8 @@ mixer.music.set_volume(0.2)
 mixer.music.play(-1)
 
 #окремі звуки
-# fire_sound = mixer.Sound(".wav")
-# fire_sound.set_volume(0.2)
+fire_sound = mixer.Sound('img/gun_fire.wav')
+fire_sound.set_volume(0.2)
 
 class GameSprite(sprite.Sprite):
     def __init__(self, sprite_img, width, height, x, y, speed = 3):
@@ -109,13 +109,13 @@ class Bullet(sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         self.pos = (x, y)
-        mx, my = mouse.get_pos # координати мишки
+        mx, my = mouse.get_pos() # координати мишки
         self.dir = (mx - x, my - y)
         lenght = math.hypot(*self.dir)
         if lenght == 0.0:
             self.dir = (0, -1) #напрямок пострілу
         else:
-            self.dir = (self.dir[0]/length, self.dir[1]/length)
+            self.dir = (self.dir[0]/lenght, self.dir[1]/lenght)
         angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
 
         self.image = Surface((9, 4)).convert_alpha() #зображення кулі
@@ -190,7 +190,7 @@ while run:
         # рух спрайтів
         player.update() #рух гравця
         zombies.update()
-
+        bullets.update()
          #зіткнення гравця і ворогів
         spritelist = sprite.spritecollide(player, zombies, False)
         for collide in spritelist:
@@ -210,6 +210,7 @@ while run:
         #відрисовуємо спрайти
         player.draw() 
         zombies.draw(window)
+        bullets.draw(window)
     else:
         result_text.draw() # текст вкінці гри
     score_text.draw()
