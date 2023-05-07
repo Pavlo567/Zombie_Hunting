@@ -15,6 +15,7 @@ bg_image = image.load("img/Ground_01.png")
 #картинки для спрайтів
 player_image = image.load("img/soldier/survivor-move_shotgun_0.png")
 zombie_image = image.load("img/zombie/skeleton-attack_0.png")
+bullet_image = image.load("img/ghfhjgkg.png")
 
 # фонова музика
 mixer.music.load('img/ente_evil.mp3')
@@ -23,7 +24,9 @@ mixer.music.play(-1)
 
 #окремі звуки
 fire_sound = mixer.Sound('img/gun_fire.wav')
-fire_sound.set_volume(0.2)
+fire_sound.set_volume(0.4)
+
+
 
 class GameSprite(sprite.Sprite):
     def __init__(self, sprite_img, width, height, x, y, speed = 3):
@@ -75,17 +78,20 @@ class Player(sprite.Sprite):
             self.image = transform.rotate(self.image_orig, -90)
 
     def fire(self):
-            print(self.rect.right)
-            bullets.add(Bullet(self.rect.x + self.width - 10, self.rect.y + self.height * 0.75))
+        print(self.rect.right)
+        bullets.add(Bullet(self.rect.x + self.width - 10, self.rect.y + self.height * 0.75))
+        fire_sound.play()
 
 class Enemy(sprite.Sprite):
-    def __init__(self, enem_image, enem_speed, enem_x, enem_y):
+    def __init__(self, enem_image):
         super().__init__()
         self.width = 100
         self.height = 100
         self.image = transform.scale(enem_image, (self.width, self.height))
-        self.speed = enem_speed
+        self.speed = 3
         self.rect = self.image.get_rect()
+        side = randint(1,4)
+        
         self.rect.x = enem_x
         self.rect.y = enem_y
     def update(self):
