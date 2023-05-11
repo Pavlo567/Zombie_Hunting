@@ -1,5 +1,5 @@
 from pygame import *
-from random import randint
+from random import *
 import math
 import os
 
@@ -15,6 +15,7 @@ bg_image = image.load("img/Ground_01.png")
 #картинки для спрайтів
 player_image = image.load("img/soldier/survivor-move_shotgun_0.png")
 zombie_image = image.load("img/zombie/skeleton-attack_0.png")
+bullet_image = image.load("img/ghfhjgkg.png")
 
 # фонова музика
 mixer.music.load('img/ente_evil.mp3')
@@ -23,7 +24,18 @@ mixer.music.play(-1)
 
 #окремі звуки
 fire_sound = mixer.Sound('img/gun_fire.wav')
-fire_sound.set_volume(0.2)
+fire_sound.set_volume(0.4)
+
+def random_position():
+    side = choice(["top", "bottom", "left", "right"])
+    if side == "top":
+        return (randint(0, WIDTH), -150)
+    elif side == "bottom":
+        return (randint(0, WIDTH), HEIGHT + 150)
+    elif side == "left":
+        return (-150, randint(0, HEIGHT))
+    elif side == "right":
+        return (HEIGHT, randint(0, HEIGHT))
 
 class GameSprite(sprite.Sprite):
     def __init__(self, sprite_img, width, height, x, y, speed = 3):
@@ -75,35 +87,27 @@ class Player(sprite.Sprite):
             self.image = transform.rotate(self.image_orig, -90)
 
     def fire(self):
-            print(self.rect.right)
-            bullets.add(Bullet(self.rect.x + self.width - 10, self.rect.y + self.height * 0.75))
+        print(self.rect.right)
+        bullets.add(Bullet(self.rect.x + self.width - 10, self.rect.y + self.height * 0.75))
+        fire_sound.play()
 
 class Enemy(sprite.Sprite):
-    def __init__(self, enem_image, enem_speed, enem_x, enem_y):
+    def __init__(self, enem_x, enem_y):
         super().__init__()
         self.width = 100
         self.height = 100
-        self.image = transform.scale(enem_image, (self.width, self.height))
-        self.speed = enem_speed
+        self.image = transform.scale(zombie_image, (self.width, self.height))
+        self.speed = 3
         self.rect = self.image.get_rect()
         self.rect.x = enem_x
         self.rect.y = enem_y
     def update(self):
-        # if self.rect.x > 0:
-        #      self.rect.x -= self.speed
-
         if self.rect.x > player.rect.x:
             self.rect.x -= self.speed
-    def draw(self):
-        window.blit(self.image, (self.rect.x, self.rect.y))
-        # Movement along y direction
+
         if self.rect.y < player.rect.y:
             self.rect.y += self.speed
-        elif self.rect.y > player.rect.y:
-            self.rect.y -= self.speed
-    def reset(self):
-        win.blit(self.image, (self.rect.x, self.rect.y))
-
+    
 
 class Bullet(sprite.Sprite):
     def __init__(self, x, y):
@@ -174,6 +178,10 @@ FPS = 60
 score = 0
 lost = 0
 
+# Змінні для генерації ворогів
+last_enemy_time = time.get_ticks()
+enemy_interval = randint(1000, 3000)
+
 # ігровий цикл
 while run:
     # перевірка подій
@@ -187,15 +195,17 @@ while run:
                 menu.enable()
                 menu.mainloop(window)
     if not finish: # поки гра триває
-        # рух спрайтів
-        player.update() #рух гравця
-        zombies.update()
-        bullets.update()
-         #зіткнення гравця і ворогів
-        spritelist = sprite.spritecollide(player, zombies, False)
-        for collide in spritelist:
-            finish = True
-            result_text.set_text("YOU LOSE!")
+        # Отримання часу, що пройшов з моменту запуску гри
+        current_time = time.get_ticks()
+        # Перевірка часу, що пройшов з моменту появи останнього ворога
+        if current_time - last_enemy_time > enemy_interval:
+            # Генерація нового ворога на випадковій стороні екрану
+            x,y = random_position()
+            zombies.add(Enemy(x,y))
+            # Оновлення часу останнього ворога та інтервалу часу між появами ворогів
+            last_enemy_time = current_time
+            enemy_interval = randint(1000, 3000)
+        
         # перевірка зіткнення 2 груп спрайтів
         # spritelist = sprite.groupcollide(zombies, bullets, True, True)
         # for collide in spritelist:
