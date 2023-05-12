@@ -97,11 +97,16 @@ class Enemy(sprite.Sprite):
         self.width = 100
         self.height = 100
         self.image = transform.scale(zombie_image, (self.width, self.height))
+        self.orig_image = self.image
         self.speed = 3
         self.rect = self.image.get_rect()
         self.rect.x = enem_x
         self.rect.y = enem_y
     def update(self):
+        
+        angle = math.degrees(math.atan2(self.rect.y-player.rect.y,player.rect.x - self.rect.x))
+        self.image = transform.rotate(self.orig_image, angle) # поворот кулі в напрямку пострілу
+        
         if self.rect.x > player.rect.x:
             self.rect.x -= self.speed
         else:
