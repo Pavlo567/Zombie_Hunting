@@ -160,7 +160,7 @@ window = display.set_mode((WIDTH, HEIGHT))
 display.set_caption("Zombie Hunting")
 
 # написи для лічильників очок
-score_text = Text("Score: 0", 20, 50)
+score_text = Text("KILLED: 0", 20, 50)
 # напис з результатом гри
 result_text = Text("YOU WIN!", 350, 250, font_size = 50)
 
@@ -211,7 +211,7 @@ while run:
         player.update()
         zombies.update()
         bullets.update()
-        
+
         # перевірка зіткнення 2 груп спрайтів
         # spritelist = sprite.groupcollide(zombies, bullets, True, True)
         # for collide in spritelist:
