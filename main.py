@@ -219,7 +219,7 @@ while run:
         # score += 1
         # score_text.set_text("Рахунок:" + str(score))
        
-        if score >= 10:
+        if score >= 50:
             finish = True
          #відрисовуємо фон
         window.blit(bg, (0, 0)) 
