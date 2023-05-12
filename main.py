@@ -104,9 +104,13 @@ class Enemy(sprite.Sprite):
     def update(self):
         if self.rect.x > player.rect.x:
             self.rect.x -= self.speed
-
+        else:
+            self.rect.x += self.speed
+        
         if self.rect.y < player.rect.y:
             self.rect.y += self.speed
+        else:
+            self.rect.y -= self.speed
     
 
 class Bullet(sprite.Sprite):
@@ -167,7 +171,6 @@ bg = transform.scale(bg_image, (WIDTH, HEIGHT))
 player = Player(player_image, player_speed=4, player_x=250, player_y=300)
 bullets = sprite.Group()
 zombies = sprite.Group()
-zombies.add(Enemy(zombie_image, 3, 500, 500))
 
 
 # основні змінні для гри
@@ -205,6 +208,9 @@ while run:
             # Оновлення часу останнього ворога та інтервалу часу між появами ворогів
             last_enemy_time = current_time
             enemy_interval = randint(1000, 3000)
+        player.update()
+        zombies.update()
+        bullets.update()
         
         # перевірка зіткнення 2 груп спрайтів
         # spritelist = sprite.groupcollide(zombies, bullets, True, True)
