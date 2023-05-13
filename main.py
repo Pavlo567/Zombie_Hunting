@@ -222,7 +222,7 @@ while run:
         # for collide in spritelist:
         # explosions.add(Explosion(collide.rect.x, collide.rect.y, images_list))
         # score += 1
-        # score_text.set_text("Рахунок:" + str(score))
+        # score_text.set_text("KILLED:" + str(score))
        
         if score >= 50:
             finish = True
