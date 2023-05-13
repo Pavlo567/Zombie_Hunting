@@ -18,8 +18,8 @@ zombie_image = image.load("img/zombie/skeleton-attack_0.png")
 bullet_image = image.load("img/ghfhjgkg.png")
 
 # фонова музика
-mixer.music.load('img/ente_evil.mp3')
-mixer.music.set_volume(0.2)
+mixer.music.load('img/khp.mp3')
+mixer.music.set_volume(0.4)
 mixer.music.play(-1)
 
 #окремі звуки
