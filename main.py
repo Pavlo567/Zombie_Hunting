@@ -217,13 +217,15 @@ while run:
         zombies.update()
         bullets.update()
 
-        # перевірка зіткнення 2 груп спрайтів
-        # spritelist = sprite.groupcollide(zombies, bullets, True, True)
-        # for collide in spritelist:
-        # explosions.add(Explosion(collide.rect.x, collide.rect.y, images_list))
-        # score += 1
-        # score_text.set_text("KILLED:" + str(score))
-       
+        spritelist = sprite.groupcollide(zombies, bullets, True, True, sprite.collide_mask)
+        for collide in spritelist:
+            score += 1
+            score_text.set_text("KILLED:" + str(score))
+        spritelist = sprite.spritecollide(player, zombies,False, sprite.collide_mask)
+        for collide in spritelist:
+            finish = True
+            result_text.set_text("YOU LOSE!")
+
         if score >= 50:
             finish = True
          #відрисовуємо фон
