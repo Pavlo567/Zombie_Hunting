@@ -25,6 +25,8 @@ mixer.music.play(-1)
 #окремі звуки
 fire_sound = mixer.Sound('img/gun_fire.wav')
 fire_sound.set_volume(0.4)
+dead_sound = mixer.Sound('img/Death.wav')
+dead_sound.set_volume(0.2)
 
 def random_position():
     side = choice(["top", "bottom", "left", "right"])
@@ -165,10 +167,10 @@ window = display.set_mode((WIDTH, HEIGHT))
 display.set_caption("Zombie Hunting")
 
 # написи для лічильників очок
-score_text = Text("KILLED: 0", 20, 50)
+score_text = Text("KILLED: 0", 20, 50, color = (255, 140, 0))
 # напис з результатом гри
-result_text = Text("YOU WIN!", 350, 250, font_size = 50)
-
+result_text = Text("YOU WIN!", 350, 250, font_size = 50, color = (0, 255,0))
+restart_btn = Text("RESTART", 370, 350, font_size = 40, color = (0, 255, 0))
 #додавання фону
 bg = transform.scale(bg_image, (WIDTH, HEIGHT))
 
@@ -198,6 +200,14 @@ while run:
             run = False
         if e.type == MOUSEBUTTONDOWN:
             player.fire()
+        if e.type == MOUSEBUTTONDOWN and finish:
+            x, y = mouse.get_pos()
+            if restart_btn.rect.collidepoint(x,y):
+                lost = 0
+                score = 0
+                score_text.set_text("KILLED:" + str(score))
+                zombies = sprite.Group()
+
         if e.type == KEYDOWN:
             if e.key == K_ESCAPE:  #якщо натиснуто ESCAPE
                 menu.enable()
@@ -221,9 +231,11 @@ while run:
         for collide in spritelist:
             score += 1
             score_text.set_text("KILLED:" + str(score))
+            dead_sound.play()
         spritelist = sprite.spritecollide(player, zombies,False, sprite.collide_mask)
         for collide in spritelist:
             finish = True
+            result_text.color = (255,0,0)
             result_text.set_text("YOU LOSE!")
 
         if score >= 50:
@@ -236,6 +248,8 @@ while run:
         bullets.draw(window)
     else:
         result_text.draw() # текст вкінці гри
+        restart_btn.draw()
+    
     score_text.draw()
     # оновлення екрану і FPS
     display.update()
