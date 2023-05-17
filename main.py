@@ -203,6 +203,7 @@ while run:
         if e.type == MOUSEBUTTONDOWN and finish:
             x, y = mouse.get_pos()
             if restart_btn.rect.collidepoint(x,y):
+                finish = False
                 lost = 0
                 score = 0
                 score_text.set_text("KILLED:" + str(score))
